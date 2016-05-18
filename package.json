@@ -1,0 +1,26 @@
+{
+  "name": "yy-logger",
+  "version": "1.0.0",
+  "description": "a logger that extend log4js",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yuemenglong/yy-logger.git"
+  },
+  "keywords": [
+    "logger",
+    "nodejs"
+  ],
+  "author": "yuemenglong@126.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yuemenglong/yy-logger/issues"
+  },
+  "homepage": "https://github.com/yuemenglong/yy-logger#readme",
+  "dependencies": {
+    "log4js": "^0.6.36"
+  }
+}
