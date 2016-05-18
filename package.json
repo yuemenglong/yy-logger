@@ -22,5 +22,6 @@
   "homepage": "https://github.com/yuemenglong/yy-logger#readme",
   "dependencies": {
     "log4js": "^0.6.36"
-  }
+  },
+  "devDependencies": {}
 }
