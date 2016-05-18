@@ -24,32 +24,21 @@ var mkdirSync = function(dir, mode) {
     }
     return true;
 }
-
-function stackInfo(n) {
-    n = n || 0;
-    // get call stack, and analyze it
-    // get all file,method and line number
-    var stacklist = (new Error()).stack.split('\n').slice(2 + n);
-    // Stack trace format :
-    // http://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
-    // DON'T Remove the regex expresses to outside of method, there is a BUG in node.js!!!
+var ext = function() {
+    var stacklist = (new Error()).stack.split('\n').slice(10);
     var stackReg = /at\s+(.*)\s+\((.*):(\d*):(\d*)\)/gi;
     var stackReg2 = /at\s+()(.*):(\d*):(\d*)/gi;
-    var data = {};
+    var info = {};
     var s = stacklist[0];
     var sp = stackReg.exec(s) || stackReg2.exec(s);
     if (sp && sp.length === 5) {
-        data.method = sp[1];
-        data.path = sp[2];
-        data.line = sp[3];
-        data.pos = sp[4];
-        data.file = path.basename(data.path);
-        data.stack = stacklist.join('\n');
+        info.method = sp[1];
+        info.path = sp[2];
+        info.line = sp[3];
+        info.pos = sp[4];
+        info.file = path.basename(info.path);
+        info.stack = stacklist.join('\n');
     }
-    return data;
-}
-var ext = function() {
-    var info = stackInfo(8);
     return util.format("%s:%d", info.file, info.line);
 }
 mkdirSync("logs");
@@ -83,7 +72,11 @@ logger.log = logger.mark;
 
 module.exports = logger;
 
-logger.log("log");
+try {
+    logger.log("log");
+} catch (e) {
+    console.log(e.stack);
+}
 // logger.trace("trace");
 // logger.debug("debug");
 // logger.info("info");
