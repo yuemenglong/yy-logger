@@ -24,8 +24,10 @@ var mkdirSync = function(dir, mode) {
     }
     return true;
 }
-var ext = function() {
-    var stacklist = (new Error()).stack.split('\n').slice(10);
+
+function ext() {
+    var stack = (new Error()).stack;
+    var stacklist = stack.split('\n').slice(10);
     var stackReg = /at\s+(.*)\s+\((.*):(\d*):(\d*)\)/gi;
     var stackReg2 = /at\s+()(.*):(\d*):(\d*)/gi;
     var info = {};
@@ -41,46 +43,43 @@ var ext = function() {
     }
     return util.format("%s:%d", info.file, info.line);
 }
-mkdirSync("logs");
-log4js.configure({
-    appenders: [{
-        type: 'console',
-        layout: {
-            type: 'pattern',
-            pattern: "%[[%d %p %x{ext}] - %m%]",
-            tokens: {
-                ext: ext,
-            }
-        },
-    }, {
-        type: "dateFile",
-        filename: LOG_PATH,
-        pattern: "-yyyy-MM-dd",
-        alwaysIncludePattern: false,
-        layout: {
-            type: 'pattern',
-            pattern: "[%d %p %x{ext}] - %m",
-            tokens: {
-                ext: ext,
-            }
-        },
-    }]
-});
 
-var logger = log4js.getLogger();
-logger.log = logger.mark;
+function init() {
+    mkdirSync("logs");
+    log4js.configure({
+        appenders: [{
+            type: 'console',
+            layout: {
+                type: 'pattern',
+                pattern: "%[[%d %p %x{ext}] - %m%]",
+                tokens: {
+                    ext: ext,
+                }
+            },
+        }, {
+            type: "dateFile",
+            filename: LOG_PATH,
+            pattern: "-yyyy-MM-dd",
+            alwaysIncludePattern: false,
+            layout: {
+                type: 'pattern',
+                pattern: "[%d %p %x{ext}] - %m",
+                tokens: {
+                    ext: ext,
+                }
+            },
+        }]
+    });
+}
+
+function exports() {
+    init();
+    var logger = log4js.getLogger();
+    logger.log = logger.mark;
+    return logger;
+}
+
+var logger = exports();
 
 module.exports = logger;
 
-try {
-    logger.log("log");
-} catch (e) {
-    console.log(e.stack);
-}
-// logger.trace("trace");
-// logger.debug("debug");
-// logger.info("info");
-// logger.warn("warn");
-// logger.error("error");
-// logger.fatal("fatal");
-// logger.mark("mark");
