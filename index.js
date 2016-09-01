@@ -44,42 +44,43 @@ function ext() {
     return util.format("%s:%d", info.file, info.line);
 }
 
-function init() {
-    mkdirSync("logs");
-    log4js.configure({
-        appenders: [{
-            type: 'console',
-            layout: {
-                type: 'pattern',
-                pattern: "%[[%d %p %x{ext}] - %m%]",
-                tokens: {
-                    ext: ext,
-                }
-            },
-        }, {
-            type: "dateFile",
-            filename: LOG_PATH,
-            pattern: "-yyyy-MM-dd",
-            alwaysIncludePattern: false,
-            layout: {
-                type: 'pattern',
-                pattern: "[%d %p %x{ext}] - %m",
-                tokens: {
-                    ext: ext,
-                }
-            },
-        }]
-    });
+var config = {
+    appenders: [{
+        type: 'console',
+        layout: {
+            type: 'pattern',
+            pattern: "%[[%d %p %x{ext}] - %m%]",
+            tokens: {
+                ext: ext,
+            }
+        },
+    }, {
+        type: "dateFile",
+        filename: LOG_PATH,
+        pattern: "-yyyy-MM-dd",
+        alwaysIncludePattern: false,
+        layout: {
+            type: 'pattern',
+            pattern: "[%d %p %x{ext}] - %m",
+            tokens: {
+                ext: ext,
+            }
+        },
+    }]
 }
 
-function exports() {
-    init();
+var getLogger = function() {
+    mkdirSync("logs");
+    log4js.configure(config);
     var logger = log4js.getLogger();
     logger.log = logger.mark;
+
+    logger.setFileName = function(name) {
+        config.appenders[1].filename = "logs/" + name;
+        log4js.configure(config);
+    }
+
     return logger;
 }
 
-var logger = exports();
-
-module.exports = logger;
-
+module.exports = getLogger();

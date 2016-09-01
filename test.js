@@ -8,3 +8,14 @@ logger.warn("warn");
 logger.error("error");
 logger.fatal("fatal");
 logger.mark("mark");
+
+logger.setFileName("test.log");
+
+logger.log("log");
+logger.trace("trace");
+logger.debug("debug");
+logger.info("info");
+logger.warn("warn");
+logger.error("error");
+logger.fatal("fatal");
+logger.mark("mark");
